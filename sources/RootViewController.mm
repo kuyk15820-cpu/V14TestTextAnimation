@@ -184,15 +184,27 @@
             cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:updateCellIdentifier];
             cell.backgroundColor = [UIColor secondarySystemGroupedBackgroundColor];
             
-            morphLabel = [[TOMSMorphingLabel alloc] initWithFrame:CGRectMake(20, 0, tableView.bounds.size.width - 40, 44)];
-            morphLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            morphLabel.font = [UIFont systemFontOfSize:17.0];
-            morphLabel.textColor = [UIColor systemPinkColor];
+            // ใช้ข้อความจำลองสั้นๆ เพื่อให้ระบบจัดตำแหน่งเลย์เอาต์ (layoutSubviews) พื้นฐานของ textLabel
+            cell.textLabel.text = @" ";
+            cell.textLabel.textColor = [UIColor systemPinkColor];
+            [cell layoutIfNeeded];
+            
+            // สร้าง MorphingLabel ให้เกาะตามพิกัดและเฟรมจริงของ textLabel ดั้งเดิมของระบบเป๊ะๆ
+            morphLabel = [[TOMSMorphingLabel alloc] initWithFrame:cell.textLabel.frame];
+            morphLabel.font = cell.textLabel.font;
+            morphLabel.textColor = cell.textLabel.textColor;
             morphLabel.tag = 999;
+            
+            // ซ่อนข้อความจำลองของระบบเดิมเพื่อเลี่ยงอักษรซ้อนกัน
+            cell.textLabel.alpha = 0.0f;
             
             [cell.contentView addSubview:morphLabel];
         } else {
             morphLabel = (TOMSMorphingLabel *)[cell.contentView viewWithTag:999];
+            // ทำการซิงค์เฟรมอีกครั้งเผื่อกรณีหน้าจอมีการเปลี่ยนแปลงขนาด
+            if (morphLabel) {
+                morphLabel.frame = cell.textLabel.frame;
+            }
         }
         
         [morphLabel setTextWithoutMorphing:@""];
@@ -397,7 +409,7 @@
             NSArray *assets = releaseInfo[[NSString stringWithUTF8String:AY_OBFUSCATE("assets")]];
             if (assets && assets.count > 0) {
                 // เก็บลิงก์ URL สำหรับใช้โหลดไฟล์ตรงของตัวแรกสุดในรายการทรัพย์สิน
-                self.latestVersionDownloadUrl = assets[0][[NSString stringWithUTF8String:AY_OBFUSCATE("browser_download_url")]];
+                self.latestVersionDownloadUrl = assets[0][[NSString stringWithUTF8Url:AY_OBFUSCATE("browser_download_url")]];
                 self.isUpdateAvailable = YES;
                 
                                 dispatch_async(dispatch_get_main_queue(), ^{
@@ -415,6 +427,8 @@
                             if (cell) {
                                 TOMSMorphingLabel *morphLabel = (TOMSMorphingLabel *)[cell.contentView viewWithTag:999];
                                 if (morphLabel) {
+                                    // บังคับอัปเดตตำแหน่งเฟรมให้ตรงกับ textLabel ล่าสุดหลังจากการพลิกและเรนเดอร์ตารางเสร็จ
+                                    morphLabel.frame = cell.textLabel.frame;
                                     morphLabel.animationDuration = 0.50;
                                     NSString *newText = [NSString stringWithUTF8String:AY_OBFUSCATE("ดาวน์โหลดเวอร์ชันใหม่")];
                                     [morphLabel setText:newText withCompletionBlock:nil];
