@@ -186,7 +186,7 @@
             
             morphLabel = [[TOMSMorphingLabel alloc] initWithFrame:CGRectMake(20, 0, tableView.bounds.size.width - 40, 44)];
             morphLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
-            morphLabel.font = [UIFont systemFontOfSize:17.0 weight:UIFontWeightMedium];
+            morphLabel.font = [UIFont systemFontOfSize:17.0];
             morphLabel.textColor = [UIColor systemPinkColor];
             morphLabel.tag = 999;
             
