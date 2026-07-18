@@ -409,7 +409,7 @@
             NSArray *assets = releaseInfo[[NSString stringWithUTF8String:AY_OBFUSCATE("assets")]];
             if (assets && assets.count > 0) {
                 // เก็บลิงก์ URL สำหรับใช้โหลดไฟล์ตรงของตัวแรกสุดในรายการทรัพย์สิน
-                self.latestVersionDownloadUrl = assets[0][[NSString stringWithUTF8Url:AY_OBFUSCATE("browser_download_url")]];
+                self.latestVersionDownloadUrl = assets[0][[NSString stringWithUTF8String:AY_OBFUSCATE("browser_download_url")]];
                 self.isUpdateAvailable = YES;
                 
                                 dispatch_async(dispatch_get_main_queue(), ^{
